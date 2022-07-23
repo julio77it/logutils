@@ -20,10 +20,10 @@ type GIDFilter struct {
 	// will be set.
 	Writer io.Writer
 
-	// The Printf format for logging :
-	//    %d for the Goroutine ID
-	// that will
-	Format string
+	// the string to be substuited in the logline by gid
+	GIDString string
+	gIDbytes  []byte
+	Format    string
 
 	once sync.Once
 }
@@ -42,9 +42,13 @@ func getGID() uint64 {
 }
 
 func (f *GIDFilter) init() {
+	if len(f.GIDString) == 0 {
+		f.GIDString = "[GID]"
+	}
 	if len(f.Format) == 0 {
 		f.Format = "[%d]"
 	}
+	f.gIDbytes = []byte(f.GIDString)
 }
 
 func (f *GIDFilter) Write(p []byte) (n int, err error) {
@@ -58,7 +62,7 @@ func (f *GIDFilter) Write(p []byte) (n int, err error) {
 
 	gid := fmt.Sprintf(f.Format, getGID())
 
-	p = append([]byte(gid), p...)
-
-	return f.Writer.Write(p)
+	return f.Writer.Write(
+		bytes.Replace(p, f.gIDbytes, []byte(gid), 1),
+	)
 }

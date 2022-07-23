@@ -14,7 +14,7 @@ func TestGIDFilter(t *testing.T) {
 	}
 
 	logger := log.New(filter, "", 0)
-	logger.Println("foo")
+	logger.Println("[GID]foo")
 
 	result := buf.String()
 	if match, _ := regexp.MatchString("\\[[0..9]\\]foo\\n", result); match {

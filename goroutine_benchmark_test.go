@@ -5,6 +5,15 @@ import (
 	"testing"
 )
 
+var gMessages [][]byte
+
+func init() {
+	gMessages = [][]byte{
+		[]byte("[GID] foo"),
+		[]byte("[GID] bar"),
+	}
+}
+
 func BenchmarkGIDFilter(b *testing.B) {
 	filter := &LevelFilter{
 		Writer: ioutil.Discard,
@@ -12,6 +21,6 @@ func BenchmarkGIDFilter(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		filter.Write(messages[i%len(messages)])
+		filter.Write(gMessages[i%len(gMessages)])
 	}
 }
