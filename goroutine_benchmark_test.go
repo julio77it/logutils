@@ -15,7 +15,7 @@ func init() {
 }
 
 func BenchmarkGIDFilter(b *testing.B) {
-	filter := &LevelFilter{
+	filter := &GIDFilter{
 		Writer: ioutil.Discard,
 	}
 
