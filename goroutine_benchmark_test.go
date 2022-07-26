@@ -25,6 +25,18 @@ func BenchmarkGIDFilter(b *testing.B) {
 	}
 }
 
+func BenchmarkGIDFilterWithoutGID(b *testing.B) {
+	filter := &GIDFilter{
+		Writer:    ioutil.Discard,
+		GIDString: "[NOGID]",
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		filter.Write(gMessages[i%len(gMessages)])
+	}
+}
+
 func BenchmarkGetGID(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {

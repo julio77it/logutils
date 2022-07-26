@@ -56,12 +56,11 @@ func (f *GIDFilter) Write(p []byte) (n int, err error) {
 	// get a single line. We use that as a slight optimization within
 	// this method, assuming we're dealing with a single, complete line
 	// of log data.
-
 	f.once.Do(f.init)
 
-	gid := fmt.Sprintf(f.Format, getGID())
-
-	return f.Writer.Write(
-		bytes.Replace(p, f.gIDbytes, []byte(gid), 1),
-	)
+	if bytes.Contains(p, f.gIDbytes) {
+		gid := fmt.Sprintf(f.Format, getGID())
+		p = bytes.Replace(p, f.gIDbytes, []byte(gid), 1)
+	}
+	return f.Writer.Write(p)
 }
