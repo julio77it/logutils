@@ -17,13 +17,25 @@ func init() {
 	}
 }
 
-func BenchmarkMixedFilter(b *testing.B) {
+func BenchmarkMixedGIDLevelFilter(b *testing.B) {
 	filter := GIDFilter{
 		Writer: &LevelFilter{
 			Levels:   []LogLevel{"TRACE", "DEBUG", "INFO", "WARN", "ERROR"},
-			MinLevel: "WARN",
+			MinLevel: "INFO",
 			Writer:   ioutil.Discard,
 		},
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		filter.Write(mMessages[i%len(mMessages)])
+	}
+}
+
+func BenchmarkMixedLevelGIDFilter(b *testing.B) {
+	filter := &LevelFilter{
+		Levels:   []LogLevel{"TRACE", "DEBUG", "INFO", "WARN", "ERROR"},
+		MinLevel: "INFO",
+		Writer:   &GIDFilter{Writer: ioutil.Discard},
 	}
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
